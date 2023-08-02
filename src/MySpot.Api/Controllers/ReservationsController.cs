@@ -18,28 +18,26 @@ public class ReservationsController : ControllerBase
     private static readonly List<Reservation> Reservations = new();
 
     [HttpGet("{id:int}")]
-    public Reservation Get(int id)
+    public ActionResult<Reservation> Get(int id)
     {
         var reservation = Reservations.SingleOrDefault(x => x.Id == id);
         if (reservation is null)
         {
-            HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
-            return default;
+            return NotFound();
         }
 
-        return reservation;
+        return Ok(reservation);
     }
     
     [HttpGet]
-    public IEnumerable<Reservation> GetAll() => Reservations;
+    public ActionResult<IEnumerable<Reservation>> GetAll() => Ok(Reservations);
     
     [HttpPost]
-    public void Post(Reservation reservation)
+    public ActionResult Post(Reservation reservation)
     {
         if (!ParkingSpotNames.Contains(reservation.ParkingSpotName))
         {
-            HttpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
-            return;
+            return BadRequest();
         }
 
         reservation.Date = DateTime.UtcNow.AddDays(1).Date;
@@ -47,11 +45,12 @@ public class ReservationsController : ControllerBase
             r.ParkingSpotName == reservation.ParkingSpotName && r.Date == reservation.Date);
         if (reservationAlreadyExists)
         {
-            HttpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
-            return;
+            return BadRequest();
         }
         
         reservation.Id = _id++;
         Reservations.Add(reservation);
+
+        return Created($"http://localhost:5000/reservations/{reservation.Id}", null);
     }
 }
