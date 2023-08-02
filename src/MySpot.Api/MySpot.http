@@ -1,7 +1,11 @@
 @url = http://localhost:5000
+@reservationId = 2
 
 ###
-GET {{url}}
+GET {{url}}/reservations
+
+###
+GET {{url}}/reservations/{{reservationId}}
 
 ###
 POST {{url}}/reservations
@@ -14,5 +18,3 @@ Content-Type: application/json
   "Date": "2022-08-23"
 }
 
-###
-PUT {{url}}/reservations

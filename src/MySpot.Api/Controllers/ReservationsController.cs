@@ -1,4 +1,5 @@
-﻿using System.Resources;
+﻿using System.Net;
+using System.Resources;
 using Microsoft.AspNetCore.Mvc;
 using MySpot.Api.Models;
 
@@ -8,18 +9,29 @@ namespace MySpot.Api.Controllers;
 [Route("[controller]")]
 public class ReservationsController : ControllerBase
 {
-    private static int _id = 1;
-    private static readonly List<Reservation> Reservations = new();
     private static readonly List<string> ParkingSpotNames = new List<string>
     {
         "P1", "P2", "P3", "P4", "P5"
     };
     
-    [HttpGet]
-    public void Get()
+    private static int _id = 1;
+    private static readonly List<Reservation> Reservations = new();
+
+    [HttpGet("{id:int}")]
+    public Reservation Get(int id)
     {
-        
+        var reservation = Reservations.SingleOrDefault(x => x.Id == id);
+        if (reservation is null)
+        {
+            HttpContext.Response.StatusCode = StatusCodes.Status404NotFound;
+            return default;
+        }
+
+        return reservation;
     }
+    
+    [HttpGet]
+    public IEnumerable<Reservation> GetAll() => Reservations;
     
     [HttpPost]
     public void Post(Reservation reservation)
