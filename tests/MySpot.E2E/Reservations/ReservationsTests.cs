@@ -44,12 +44,13 @@ public class ReservationTests : IClassFixture<WebApplicationFactory<Program>>
         deleteResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
 
         // POST request
+        var reservationDate = DateTime.UtcNow.Date.AddDays(1);
         var reservation = new
         {
             EmployeeName = "John Doe",
             ParkingSpotName = "P1",
             LicensePlate = "XYZ123",
-            Date = "2023-08-03"
+            Date = reservationDate.ToString("yyyy-MM-dd")
         };
         var postResponse = await client.PostAsJsonAsync("/reservations", reservation);
         postResponse.StatusCode.Should().Be(HttpStatusCode.Created);
@@ -79,7 +80,7 @@ public class ReservationTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.Equal("John Doe", returnedReservation.GetProperty("employeeName").GetString());
         Assert.Equal("P1", returnedReservation.GetProperty("parkingSpotName").GetString());
         Assert.Equal("XYZ123", returnedReservation.GetProperty("licensePlate").GetString());
-        Assert.Equal(DateTime.Now.AddDays(1).Date.ToString("yyyy-MM-ddTHH:mm:ssZ"), returnedReservation.GetProperty("date").GetString());
+        Assert.Equal(reservationDate.ToString("yyyy-MM-ddTHH:mm:ss"), returnedReservation.GetProperty("date").GetString());
 
         // Change License Plate
         putResponse = await client.PutAsJsonAsync($"/reservations/{id}", putBody);
@@ -92,7 +93,7 @@ public class ReservationTests : IClassFixture<WebApplicationFactory<Program>>
         Assert.Equal("John Doe", returnedReservation.GetProperty("employeeName").GetString());
         Assert.Equal("P1", returnedReservation.GetProperty("parkingSpotName").GetString());
         Assert.Equal(putBody.LicensePlate, returnedReservation.GetProperty("licensePlate").GetString());
-        Assert.Equal(DateTime.Now.AddDays(1).Date.ToString("yyyy-MM-ddTHH:mm:ssZ"), returnedReservation.GetProperty("date").GetString());
+        Assert.Equal(reservationDate.ToString("yyyy-MM-ddTHH:mm:ss"), returnedReservation.GetProperty("date").GetString());
 
         // Remove reservation with wrong Id
         deleteResponse = await client.DeleteAsync($"/reservations/{wrongId}");
