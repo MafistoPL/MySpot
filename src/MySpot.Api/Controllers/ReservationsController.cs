@@ -53,4 +53,17 @@ public class ReservationsController : ControllerBase
 
         return CreatedAtAction(nameof(Get), new {id = reservation.Id}, null);
     }
+
+    [HttpPut("{id:int}")]
+    public ActionResult Put(int id, Reservation reservation)
+    {
+        var existingReservation = Reservations.SingleOrDefault(x => x.Id == id);
+        if (existingReservation is null)
+        {
+            return NotFound();
+        }
+        existingReservation.LicensePlate = reservation.LicensePlate;
+
+        return NoContent();
+    }
 }

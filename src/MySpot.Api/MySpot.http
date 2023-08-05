@@ -1,5 +1,5 @@
 @url = http://localhost:5000
-@reservationId = 2
+@reservationId = 1
 
 ###
 GET {{url}}/reservations
@@ -18,3 +18,10 @@ Content-Type: application/json
   "Date": "2022-08-23"
 }
 
+###
+PUT {{url}}/reservations/{{reservationId}}
+Content-Type: application/json
+
+{
+  "LicensePlate": "ABC987"
+}
