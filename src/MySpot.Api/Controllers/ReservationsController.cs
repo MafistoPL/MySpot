@@ -66,4 +66,17 @@ public class ReservationsController : ControllerBase
 
         return NoContent();
     }
+
+    [HttpDelete("{id:int}")]
+    public ActionResult Delete(int id)
+    {
+        var existingReservation = Reservations.SingleOrDefault(x => x.Id == id);
+        if (existingReservation is null)
+        {
+            return NotFound();
+        }
+        Reservations.Remove(existingReservation);
+        
+        return NoContent();
+    }
 }
