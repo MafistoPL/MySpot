@@ -1,5 +1,5 @@
 @url = http://localhost:5000
-@reservationId = 1
+@reservationId = 2
 
 ###
 GET {{url}}/reservations
@@ -25,3 +25,6 @@ Content-Type: application/json
 {
   "LicensePlate": "ABC987"
 }
+
+###
+DELETE {{url}}/reservations/{{reservationId}}
