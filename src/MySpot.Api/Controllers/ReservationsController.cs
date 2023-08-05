@@ -51,6 +51,6 @@ public class ReservationsController : ControllerBase
         reservation.Id = _id++;
         Reservations.Add(reservation);
 
-        return Created($"http://localhost:5000/reservations/{reservation.Id}", null);
+        return CreatedAtAction(nameof(Get), new {id = reservation.Id}, null);
     }
 }
