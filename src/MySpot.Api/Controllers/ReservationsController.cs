@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using MySpot.Api.Commands;
+using MySpot.Api.DTO;
 using MySpot.Api.Models;
 using MySpot.Api.Services;
 
@@ -10,8 +12,8 @@ public class ReservationsController : ControllerBase
 {
     private readonly ReservationsService _reservationsService = new();
     
-    [HttpGet("{id:int}")]
-    public ActionResult<Reservation> Get(int id)
+    [HttpGet("{id:guid}")]
+    public ActionResult<Reservation> Get(Guid id)
     {
         var reservation = _reservationsService.Get(id);
         if (reservation is null)
@@ -23,12 +25,12 @@ public class ReservationsController : ControllerBase
     }
     
     [HttpGet]
-    public ActionResult<IEnumerable<Reservation>> GetAll() => Ok(_reservationsService.GetAll());
+    public ActionResult<IEnumerable<ReservationDto>> GetAll() => Ok(_reservationsService.GetAllWeekly());
     
     [HttpPost]
-    public ActionResult Post(Reservation reservation)
+    public ActionResult Post(CreateReservation command)
     {
-        var id = _reservationsService.Create(reservation);
+        var id = _reservationsService.Create(command);
         if (id is null)
         {
             return BadRequest();
@@ -37,11 +39,10 @@ public class ReservationsController : ControllerBase
         return CreatedAtAction(nameof(Get), new {id}, null);
     }
 
-    [HttpPut("{id:int}")]
-    public ActionResult Put(int id, Reservation reservation)
+    [HttpPut("{id:guid}")]
+    public ActionResult Put(Guid id, ChangeReservationLicensePlate command)
     {
-        reservation.Id = id;
-        if (_reservationsService.Update(reservation))
+        if (_reservationsService.Update(command with {ReservationId = id}))
         {
             return NoContent();
         }
@@ -49,10 +50,10 @@ public class ReservationsController : ControllerBase
         return NotFound();
     }
 
-    [HttpDelete("{id:int}")]
-    public ActionResult Delete(int id)
+    [HttpDelete("{id:guid}")]
+    public ActionResult Delete(Guid id)
     {
-        if (_reservationsService.Delete(id))
+        if (_reservationsService.Delete(new DeleteReservation(id)))
         {
             return NoContent();
         }
