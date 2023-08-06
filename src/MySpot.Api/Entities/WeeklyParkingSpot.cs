@@ -1,5 +1,6 @@
 ﻿using MySpot.Api.Exceptions;
 using MySpot.Api.Models;
+using MySpot.Api.ValueObjects;
 
 namespace MySpot.Api.Entities;
 
@@ -7,35 +8,33 @@ public class WeeklyParkingSpot
 {
     private readonly HashSet<Reservation> _reservations = new();
     
-    public Guid Id { get; }
-    public DateTime From { get; }
-    public DateTime To { get; }
-    public string Name { get; }
+    public ParkingSpotId Id { get; }
+    public Week Week { get; }
+    public ParkingSpotName Name { get; }
     public IEnumerable<Reservation> Reservations => _reservations;
 
-    public WeeklyParkingSpot(Guid id, DateTime from, DateTime to, string name)
+    public WeeklyParkingSpot(ParkingSpotId id, Week week, ParkingSpotName name)
     {
         Id = id;
-        From = from;
-        To = to;
+        Week = week;
         Name = name;
     }
 
-    public void AddReservation(Reservation reservation, DateTime now)
+    public void AddReservation(Reservation reservation, Date now)
     {
-        var isInvalidDate = reservation.Date.Date < From ||
-                            reservation.Date.Date > To ||
-                            reservation.Date.Date < now;
+        var isInvalidDate = reservation.Date < Week.From ||
+                            reservation.Date > Week.To ||
+                            reservation.Date < now;
         if (isInvalidDate)
         {
-            throw new InvalidReservationDateException(reservation.Date);
+            throw new InvalidReservationDateException(reservation.Date.Value.Date);
         }
 
         var reservationAlreadyExists = Reservations.Any(x =>
-            x.Date.Date == reservation.Date.Date);
+            x.Date == reservation.Date);
         if (reservationAlreadyExists)
         {
-            throw new ParkingSpotAlreadyReservedException(Name, reservation.Date);
+            throw new ParkingSpotAlreadyReservedException(Name, reservation.Date.Value.Date);
         }
 
         _reservations.Add(reservation);
