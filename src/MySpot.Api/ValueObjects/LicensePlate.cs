@@ -2,7 +2,7 @@
 
 namespace MySpot.Api.ValueObjects;
 
-public record LicensePlate
+public sealed record LicensePlate
 {
     public string Value { get; }
 
