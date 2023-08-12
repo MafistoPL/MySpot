@@ -1,6 +1,7 @@
 ﻿using MySpot.Api.Commands;
 using MySpot.Api.Entities;
 using MySpot.Api.Models;
+using MySpot.Api.Repositiries;
 using MySpot.Api.Services;
 using MySpot.Api.ValueObjects;
 using MySpot.Tests.Unit.Shared;
@@ -14,20 +15,14 @@ public class ReservationsServiceTests
     #region Arrange
 
     private readonly ReservationsService _reservationService;
-    private readonly IClock _clock = new TestClock();
-    private readonly List<WeeklyParkingSpot> _weeklyParkingSpots;
+    private readonly IClock _clock;
+    private readonly IWeeklyParkingSpotRepository _weeklyParkingSpotRepository;
 
     public ReservationsServiceTests()
     {
-        _weeklyParkingSpots = new()
-        {
-            new (Guid.Parse("00000000-0000-0000-0000-000000000001"), new Week(_clock.Current()), "P1"),
-            new (Guid.Parse("00000000-0000-0000-0000-000000000002"), new Week(_clock.Current()), "P2"),
-            new (Guid.Parse("00000000-0000-0000-0000-000000000003"), new Week(_clock.Current()), "P3"),
-            new (Guid.Parse("00000000-0000-0000-0000-000000000004"), new Week(_clock.Current()), "P4"),
-            new (Guid.Parse("00000000-0000-0000-0000-000000000005"), new Week(_clock.Current()), "P5"),
-        };
-        _reservationService = new ReservationsService(_weeklyParkingSpots, _clock);
+        _clock = new TestClock();
+        _weeklyParkingSpotRepository = new InMemoryWeeklyParkingSpotRepository(_clock);
+        _reservationService = new ReservationsService(_weeklyParkingSpotRepository, _clock);
     }
 
     #endregion
@@ -36,12 +31,12 @@ public class ReservationsServiceTests
     public void given_reservation_for_not_taken_date_add_reservation_should_succeed()
     {
         // ARRANGE
-        var parkingSpot = _weeklyParkingSpots.First(); 
+        var parkingSpot = _weeklyParkingSpotRepository.GetAll().First(); 
         var command = new CreateReservation(
             parkingSpot.Id,
             "John Doe",
             "XYZ123",
-            DateTime.UtcNow.AddMinutes(5)
+            _clock.Current().AddMinutes(5)
         );
         
         // ACT
