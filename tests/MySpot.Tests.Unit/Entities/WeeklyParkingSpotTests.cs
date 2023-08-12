@@ -60,4 +60,19 @@ public class WeeklyParkingSpotTests
         exception.ShouldNotBeNull();
         exception.ShouldBeOfType<ParkingSpotAlreadyReservedException>();
     }
+
+    [Fact]
+    public void given_reservation_for_not_taken_date_add_reservation_should_succeed()
+    {
+        // ARRANGE
+        var reservationDate = _now.AddDays(1);
+        var reservation = new Reservation(Guid.NewGuid(), _weeklyParkingSpot.Id, 
+            "John Doe", "XYZ123", reservationDate);
+        
+        // ACT
+        _weeklyParkingSpot.AddReservation(reservation, _now);
+
+        // ASSERT
+        _weeklyParkingSpot.Reservations.ShouldHaveSingleItem();
+    }
 }
