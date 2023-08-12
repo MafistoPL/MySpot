@@ -14,19 +14,18 @@ public class ReservationsServiceTests
 
     private readonly ReservationsService _reservationService;
     private static readonly Clock Clock = new();
-
-    private readonly List<WeeklyParkingSpot> _weeklyParkingSpots = new()
-    {
-        new WeeklyParkingSpot(Guid.Parse("00000000-0000-0000-0000-000000000001"), new Week(Clock.Current()), "P1"),
-        new WeeklyParkingSpot(Guid.Parse("00000000-0000-0000-0000-000000000002"), new Week(Clock.Current()), "P2"),
-        new WeeklyParkingSpot(Guid.Parse("00000000-0000-0000-0000-000000000003"), new Week(Clock.Current()), "P3"),
-        new WeeklyParkingSpot(Guid.Parse("00000000-0000-0000-0000-000000000004"), new Week(Clock.Current()), "P4"),
-        new WeeklyParkingSpot(Guid.Parse("00000000-0000-0000-0000-000000000005"), new Week(Clock.Current()), "P5"),
-    };
-    
+    private readonly List<WeeklyParkingSpot> _weeklyParkingSpots;
 
     public ReservationsServiceTests()
     {
+        _weeklyParkingSpots = new()
+        {
+            new (Guid.Parse("00000000-0000-0000-0000-000000000001"), new Week(Clock.Current()), "P1"),
+            new (Guid.Parse("00000000-0000-0000-0000-000000000002"), new Week(Clock.Current()), "P2"),
+            new (Guid.Parse("00000000-0000-0000-0000-000000000003"), new Week(Clock.Current()), "P3"),
+            new (Guid.Parse("00000000-0000-0000-0000-000000000004"), new Week(Clock.Current()), "P4"),
+            new (Guid.Parse("00000000-0000-0000-0000-000000000005"), new Week(Clock.Current()), "P5"),
+        };
         _reservationService = new ReservationsService(_weeklyParkingSpots);
     }
 
