@@ -9,9 +9,9 @@ namespace MySpot.Api.Services;
 public class ReservationsService
 {
     private static readonly Clock Clock = new();
-    private readonly List<WeeklyParkingSpot> _weeklyParkingSpots;
+    private readonly IEnumerable<WeeklyParkingSpot> _weeklyParkingSpots;
 
-    public ReservationsService(List<WeeklyParkingSpot> weeklyParkingSpots)
+    public ReservationsService(IEnumerable<WeeklyParkingSpot> weeklyParkingSpots)
     {
         _weeklyParkingSpots = weeklyParkingSpots;
     }
