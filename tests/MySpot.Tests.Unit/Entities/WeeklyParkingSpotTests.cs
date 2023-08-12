@@ -2,6 +2,7 @@
 using MySpot.Api.Exceptions;
 using MySpot.Api.Models;
 using MySpot.Api.ValueObjects;
+using Shouldly;
 using Xunit;
 
 namespace MySpot.Tests.Unit.Entities;
@@ -28,7 +29,7 @@ public class WeeklyParkingSpotTests
             () => weeklyParkingSpot.AddReservation(reservation, new Date(now)));
 
         // ASSERT
-        Assert.NotNull(exception);
-        Assert.IsType<InvalidReservationDateException>(exception);
+        exception.ShouldNotBeNull();
+        exception.ShouldBeOfType<InvalidReservationDateException>();
     }
 }
