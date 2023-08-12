@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MySpot.Api.Commands;
 using MySpot.Api.DTO;
+using MySpot.Api.Entities;
 using MySpot.Api.Models;
 using MySpot.Api.Services;
+using MySpot.Api.ValueObjects;
 
 namespace MySpot.Api.Controllers;
 
@@ -10,7 +12,15 @@ namespace MySpot.Api.Controllers;
 [Route("[controller]")]
 public class ReservationsController : ControllerBase
 {
-    private readonly ReservationsService _reservationsService = new();
+    private static readonly Clock Clock = new();
+    private static readonly ReservationsService _reservationsService = new(new()
+    {
+        new WeeklyParkingSpot(Guid.Parse("00000000-0000-0000-0000-000000000001"), new Week(Clock.Current()), "P1"),
+        new WeeklyParkingSpot(Guid.Parse("00000000-0000-0000-0000-000000000002"), new Week(Clock.Current()), "P2"),
+        new WeeklyParkingSpot(Guid.Parse("00000000-0000-0000-0000-000000000003"), new Week(Clock.Current()), "P3"),
+        new WeeklyParkingSpot(Guid.Parse("00000000-0000-0000-0000-000000000004"), new Week(Clock.Current()), "P4"),
+        new WeeklyParkingSpot(Guid.Parse("00000000-0000-0000-0000-000000000005"), new Week(Clock.Current()), "P5"),
+    });
     
     [HttpGet("{id:guid}")]
     public ActionResult<Reservation> Get(Guid id)
