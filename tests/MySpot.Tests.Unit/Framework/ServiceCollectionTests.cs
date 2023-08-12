@@ -12,14 +12,27 @@ public class ServiceCollectionTests
     {
         var serviceCollection = new ServiceCollection();
 
-        serviceCollection.AddSingleton<IMessenger, Messenger>();
+        serviceCollection.AddScoped<IMessenger, Messenger>();
         
         var serviceProvider = serviceCollection.BuildServiceProvider();
         
-        var messenger = serviceProvider.GetRequiredService<IMessenger>();
-        var messenger2 = serviceProvider.GetRequiredService<IMessenger>();
- 
+        IMessenger messenger, messenger2, messenger3, messenger4;
+
+        using (var scope = serviceProvider.CreateScope())
+        {
+            messenger = scope.ServiceProvider.GetRequiredService<IMessenger>();
+            messenger2 = scope.ServiceProvider.GetRequiredService<IMessenger>();
+        }
+
+        using (var otherScope = serviceProvider.CreateScope())
+        {
+            messenger3 = otherScope.ServiceProvider.GetRequiredService<IMessenger>();
+            messenger4 = otherScope.ServiceProvider.GetRequiredService<IMessenger>();
+        }
+
         messenger.GetId().ShouldBe(messenger2.GetId());
+        messenger3.GetId().ShouldBe(messenger4.GetId());
+        messenger.GetId().ShouldNotBe(messenger4.GetId());
     }
     
     private interface IMessenger
