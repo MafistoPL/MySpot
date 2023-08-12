@@ -12,14 +12,14 @@ public class ServiceCollectionTests
     {
         var serviceCollection = new ServiceCollection();
 
-        serviceCollection.AddTransient<IMessenger, Messenger>();
+        serviceCollection.AddSingleton<IMessenger, Messenger>();
         
         var serviceProvider = serviceCollection.BuildServiceProvider();
         
         var messenger = serviceProvider.GetRequiredService<IMessenger>();
         var messenger2 = serviceProvider.GetRequiredService<IMessenger>();
  
-        messenger.GetId().ShouldNotBe(messenger2.GetId());
+        messenger.GetId().ShouldBe(messenger2.GetId());
     }
     
     private interface IMessenger
