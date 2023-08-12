@@ -17,9 +17,16 @@ public class ServiceCollectionTests
         
         var serviceProvider = serviceCollection.BuildServiceProvider();
         
-        IMessenger messenger = serviceProvider.GetRequiredService<IMessenger>();
+        var messengers = serviceProvider.GetService<IEnumerable<IMessenger>>();
+        var messengers2 = serviceProvider.GetServices<IMessenger>();
 
-        messenger.ShouldBeOfType<Messenger2>();
+        messengers.Count().ShouldBe(2);
+        messengers.First().ShouldBeOfType<Messenger>();
+        messengers.Skip(1).First().ShouldBeOfType<Messenger2>();
+
+        messengers2.Count().ShouldBe(2);
+        messengers2.First().ShouldBeOfType<Messenger>();
+        messengers2.Skip(1).First().ShouldBeOfType<Messenger2>();
     }
     
     private interface IMessenger
