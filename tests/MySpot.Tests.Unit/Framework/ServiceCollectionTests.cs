@@ -15,11 +15,10 @@ public class ServiceCollectionTests
         serviceCollection.AddTransient<IMessenger, Messenger>();
         
         var serviceProvider = serviceCollection.BuildServiceProvider();
-        // there is no key Messenger in service collection
-        var messenger = serviceProvider.GetService<Messenger>();  
-
-        // that's why test would fail
-        messenger.ShouldNotBeNull();
+        // there is no key Messenger in service collection, getRequiredService would throw exception
+        var exception = Record.Exception(() => serviceProvider.GetRequiredService<Messenger>());  
+        
+        exception.ShouldBeOfType<InvalidOperationException>();
     }
     
     private interface IMessenger
