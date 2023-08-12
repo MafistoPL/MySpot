@@ -13,26 +13,13 @@ public class ServiceCollectionTests
         var serviceCollection = new ServiceCollection();
 
         serviceCollection.AddScoped<IMessenger, Messenger>();
+        serviceCollection.AddScoped<IMessenger, Messenger2>();
         
         var serviceProvider = serviceCollection.BuildServiceProvider();
         
-        IMessenger messenger, messenger2, messenger3, messenger4;
+        IMessenger messenger = serviceProvider.GetRequiredService<IMessenger>();
 
-        using (var scope = serviceProvider.CreateScope())
-        {
-            messenger = scope.ServiceProvider.GetRequiredService<IMessenger>();
-            messenger2 = scope.ServiceProvider.GetRequiredService<IMessenger>();
-        }
-
-        using (var otherScope = serviceProvider.CreateScope())
-        {
-            messenger3 = otherScope.ServiceProvider.GetRequiredService<IMessenger>();
-            messenger4 = otherScope.ServiceProvider.GetRequiredService<IMessenger>();
-        }
-
-        messenger.GetId().ShouldBe(messenger2.GetId());
-        messenger3.GetId().ShouldBe(messenger4.GetId());
-        messenger.GetId().ShouldNotBe(messenger4.GetId());
+        messenger.ShouldBeOfType<Messenger2>();
     }
     
     private interface IMessenger
@@ -42,6 +29,16 @@ public class ServiceCollectionTests
     }
 
     private class Messenger : IMessenger
+    {
+        private readonly Guid _id = Guid.NewGuid();
+
+        public void Send()
+            => Console.WriteLine($"Sending a message... [{_id}");
+
+        public Guid GetId() => _id;
+    }
+    
+    private class Messenger2 : IMessenger
     {
         private readonly Guid _id = Guid.NewGuid();
 
