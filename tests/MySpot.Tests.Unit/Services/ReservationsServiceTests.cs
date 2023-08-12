@@ -3,6 +3,7 @@ using MySpot.Api.Entities;
 using MySpot.Api.Models;
 using MySpot.Api.Services;
 using MySpot.Api.ValueObjects;
+using MySpot.Tests.Unit.Shared;
 using Shouldly;
 using Xunit;
 
@@ -13,20 +14,20 @@ public class ReservationsServiceTests
     #region Arrange
 
     private readonly ReservationsService _reservationService;
-    private static readonly Clock Clock = new();
+    private readonly IClock _clock = new TestClock();
     private readonly List<WeeklyParkingSpot> _weeklyParkingSpots;
 
     public ReservationsServiceTests()
     {
         _weeklyParkingSpots = new()
         {
-            new (Guid.Parse("00000000-0000-0000-0000-000000000001"), new Week(Clock.Current()), "P1"),
-            new (Guid.Parse("00000000-0000-0000-0000-000000000002"), new Week(Clock.Current()), "P2"),
-            new (Guid.Parse("00000000-0000-0000-0000-000000000003"), new Week(Clock.Current()), "P3"),
-            new (Guid.Parse("00000000-0000-0000-0000-000000000004"), new Week(Clock.Current()), "P4"),
-            new (Guid.Parse("00000000-0000-0000-0000-000000000005"), new Week(Clock.Current()), "P5"),
+            new (Guid.Parse("00000000-0000-0000-0000-000000000001"), new Week(_clock.Current()), "P1"),
+            new (Guid.Parse("00000000-0000-0000-0000-000000000002"), new Week(_clock.Current()), "P2"),
+            new (Guid.Parse("00000000-0000-0000-0000-000000000003"), new Week(_clock.Current()), "P3"),
+            new (Guid.Parse("00000000-0000-0000-0000-000000000004"), new Week(_clock.Current()), "P4"),
+            new (Guid.Parse("00000000-0000-0000-0000-000000000005"), new Week(_clock.Current()), "P5"),
         };
-        _reservationService = new ReservationsService(_weeklyParkingSpots);
+        _reservationService = new ReservationsService(_weeklyParkingSpots, _clock);
     }
 
     #endregion
