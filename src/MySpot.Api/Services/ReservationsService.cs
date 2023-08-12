@@ -8,12 +8,13 @@ namespace MySpot.Api.Services;
 
 public class ReservationsService
 {
-    private static readonly Clock Clock = new();
+    private readonly IClock _clock;
     private readonly IEnumerable<WeeklyParkingSpot> _weeklyParkingSpots;
 
-    public ReservationsService(IEnumerable<WeeklyParkingSpot> weeklyParkingSpots)
+    public ReservationsService(IEnumerable<WeeklyParkingSpot> weeklyParkingSpots, IClock clock)
     {
         _weeklyParkingSpots = weeklyParkingSpots;
+        _clock = clock;
     }
     
     public ReservationDto Get(Guid id)
@@ -44,7 +45,7 @@ public class ReservationsService
             command.EmployeeName,
             command.LicensePlate, 
             new Date(command.Date));
-        weeklyParkingSpot.AddReservation(reservation, new Date(Clock.Current()));
+        weeklyParkingSpot.AddReservation(reservation, new Date(_clock.Current()));
 
         return reservation.Id;
     }
@@ -64,7 +65,7 @@ public class ReservationsService
             return false;
         }
 
-        if (existingReservation.Date.Value <= Clock.Current())
+        if (existingReservation.Date.Value <= _clock.Current())
         {
             return false;
         }

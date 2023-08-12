@@ -12,10 +12,10 @@ namespace MySpot.Api.Controllers;
 [Route("[controller]")]
 public class ReservationsController : ControllerBase
 {
-    private readonly Clock _clock;
+    private readonly IClock _clock;
     private readonly ReservationsService _reservationsService;
 
-    public ReservationsController(Clock clock, ReservationsService reservationsService)
+    public ReservationsController(IClock clock, ReservationsService reservationsService)
     {
         _clock = clock;
         _reservationsService = reservationsService;
