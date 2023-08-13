@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using MySpot.Infrastructure;
 
 namespace MySpot.Api.Controllers;
 
@@ -7,12 +8,17 @@ namespace MySpot.Api.Controllers;
 public class HomeController : ControllerBase
 {
     private readonly IConfiguration _configuration;
+    private readonly AppOptions _appOptions;
 
-    public HomeController(IConfiguration configuration)
+    // more robust, but it doesn't change while app is running
+    // public HomeController(IOptions<AppOptions> options) 
+    
+    // slower but it changes while app is running
+    public HomeController(IOptionsSnapshot<AppOptions> options)
     {
-        _configuration = configuration;
+        _appOptions = options.Value;
     }
 
     [HttpGet]
-    public ActionResult<string> Get() => _configuration["app:name"];
+    public ActionResult<string> Get() => _appOptions.Name;
 }
