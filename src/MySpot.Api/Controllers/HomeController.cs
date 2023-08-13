@@ -14,5 +14,5 @@ public class HomeController : ControllerBase
     }
 
     [HttpGet]
-    public ActionResult<string> Get() => _configuration["name"];
+    public ActionResult<string> Get() => _configuration["app:name"];
 }
