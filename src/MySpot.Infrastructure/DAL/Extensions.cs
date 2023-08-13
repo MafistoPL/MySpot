@@ -1,5 +1,6 @@
 ﻿using System.Runtime.Serialization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MySpot.Core.Repositiries;
 using MySpot.Infrastructure.DAL.Repositories;
@@ -8,12 +9,14 @@ namespace MySpot.Infrastructure.DAL;
 
 internal static class Extensions
 {
-    public static IServiceCollection AddPostgres(this IServiceCollection services)
+    private const string OptionsSectionName = "postgres";
+    
+    public static IServiceCollection AddPostgres(this IServiceCollection services, IConfiguration configuration)
     {
-        const string connectionString = "Host=localhost;Port=2043;Database=MySpot;Username=postgres;Password=example;";
-
+        services.Configure<PostgresOptions>(configuration.GetRequiredSection(OptionsSectionName));
+        var postgresOptions = configuration.GetOptions<PostgresOptions>(OptionsSectionName);
         services.AddDbContext<MySpotDbContext>(
-            x => x.UseNpgsql(connectionString));
+            x => x.UseNpgsql(postgresOptions.ConnectionString));
         services.AddScoped<IWeeklyParkingSpotRepository, PostgresWeeklyParkingSpotRepository>();
         services.AddHostedService<DatabaseInitializer>();
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
