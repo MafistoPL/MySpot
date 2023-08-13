@@ -39,3 +39,29 @@ MySpot/
       ###
       GET {{url}}/WeatherForecast
     ```
+
+## Adding migrations
+
+* Navigate to project where you want to add migration:
+
+```powershell
+cd .\src\MySpot.Infrastructure
+```
+
+* Add NuGet package to MySpot.Api
+
+```cs
+Microsoft.EntityFrameworkCore.Design
+```
+
+* Add migration:
+
+```powershell
+dotnet ef migrations add Init -o ./DAL/Migrations --startup-project ../MySpot.Api
+```
+
+* Apply migration:
+
+```powershell
+dotnet ef database update
+```

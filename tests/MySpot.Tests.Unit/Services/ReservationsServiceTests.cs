@@ -1,7 +1,7 @@
 ﻿using MySpot.Application.Commands;
 using MySpot.Application.Services;
 using MySpot.Core.Repositiries;
-using MySpot.Infrastructure.Repositiries;
+using MySpot.Infrastructure.DAL.Repositories;
 using MySpot.Tests.Unit.Shared;
 using Shouldly;
 using Xunit;
