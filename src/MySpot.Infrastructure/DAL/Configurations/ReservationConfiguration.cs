@@ -23,7 +23,7 @@ internal sealed class ReservationConfiguration : IEntityTypeConfiguration<Reserv
             .HasConversion(x => x.Value,
                 x => new LicensePlate(x));
         builder.Property(x => x.Date)
-            .HasConversion(x => x.Value,
+            .HasConversion(x => x.Value.ToUniversalTime(),
                 x => new Date(x));
     }
 }
