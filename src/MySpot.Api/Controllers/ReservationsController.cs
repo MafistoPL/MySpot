@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MySpot.Api.Commands;
-using MySpot.Api.DTO;
-using MySpot.Api.Entities;
-using MySpot.Api.Models;
-using MySpot.Api.Services;
-using MySpot.Api.ValueObjects;
+using MySpot.Application.Commands;
+using MySpot.Application.DTO;
+using MySpot.Application.Services;
+using MySpot.Core.Entities;
 
 namespace MySpot.Api.Controllers;
 
@@ -13,9 +11,9 @@ namespace MySpot.Api.Controllers;
 public class ReservationsController : ControllerBase
 {
     private readonly IClock _clock;
-    private readonly ReservationsService _reservationsService;
+    private readonly IReservationsService _reservationsService;
 
-    public ReservationsController(IClock clock, ReservationsService reservationsService)
+    public ReservationsController(IClock clock, IReservationsService reservationsService)
     {
         _clock = clock;
         _reservationsService = reservationsService;
