@@ -7,7 +7,6 @@ namespace MySpot.Api.Controllers;
 [Route("")]
 public class HomeController : ControllerBase
 {
-    private readonly IConfiguration _configuration;
     private readonly AppOptions _appOptions;
 
     // more robust, but it doesn't change while app is running
