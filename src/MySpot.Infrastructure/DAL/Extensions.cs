@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Runtime.Serialization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MySpot.Core.Repositiries;
 using MySpot.Infrastructure.DAL.Repositories;
@@ -14,6 +15,7 @@ internal static class Extensions
         services.AddDbContext<MySpotDbContext>(
             x => x.UseNpgsql(connectionString));
         services.AddScoped<IWeeklyParkingSpotRepository, PostgresWeeklyParkingSpotRepository>();
+        services.AddHostedService<DatabaseInitializer>();
         AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
         return services;
