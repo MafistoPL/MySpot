@@ -60,6 +60,12 @@ Microsoft.EntityFrameworkCore.Design
 dotnet ef migrations add Init -o ./DAL/Migrations --startup-project ../MySpot.Api
 ```
 
+* Navigate to startup project
+
+```powershell
+cd ../MySpot.Api
+```
+
 * Apply migration:
 
 ```powershell
