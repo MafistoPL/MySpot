@@ -1,6 +1,6 @@
 ﻿using MySpot.Application.Commands;
 using MySpot.Application.Services;
-using MySpot.Core.Repositiries;
+using MySpot.Core.Repositories;
 using MySpot.Infrastructure.DAL.Repositories;
 using MySpot.Tests.Unit.Shared;
 using Shouldly;
@@ -26,10 +26,10 @@ public class ReservationsServiceTests
     #endregion
 
     [Fact]
-    public void given_reservation_for_not_taken_date_add_reservation_should_succeed()
+    public async Task given_reservation_for_not_taken_date_add_reservation_should_succeed()
     {
         // ARRANGE
-        var parkingSpot = _weeklyParkingSpotRepository.GetAll().First(); 
+        var parkingSpot = (await _weeklyParkingSpotRepository.GetAllAsync()).First(); 
         var command = new CreateReservation(
             parkingSpot.Id,
             "John Doe",
@@ -38,7 +38,7 @@ public class ReservationsServiceTests
         );
         
         // ACT
-        var reservationId = _reservationService.Create(command);
+        var reservationId = await _reservationService.CreateAsync(command);
 
         // ASSERT
         reservationId.ShouldNotBeNull();
