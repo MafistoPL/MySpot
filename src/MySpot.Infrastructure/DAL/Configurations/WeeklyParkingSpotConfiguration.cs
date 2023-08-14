@@ -17,7 +17,7 @@ internal sealed class WeeklyParkingSpotConfiguration : IEntityTypeConfiguration<
             .HasConversion(x => x.Value,
                 x => new ParkingSpotName(x));
         builder.Property(x => x.Week)
-            .HasConversion(x => x.To.Value.ToUniversalTime(),
+            .HasConversion(x => x.To.Value,
                 x => new Week(x));
     }
 }

@@ -2,6 +2,7 @@
 using MySpot.Application.Commands;
 using MySpot.Application.DTO;
 using MySpot.Application.Services;
+using MySpot.Core.Abstractions;
 using MySpot.Core.Entities;
 
 namespace MySpot.Api.Controllers;

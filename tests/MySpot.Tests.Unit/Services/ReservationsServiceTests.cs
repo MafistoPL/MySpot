@@ -1,5 +1,8 @@
 ﻿using MySpot.Application.Commands;
 using MySpot.Application.Services;
+using MySpot.Core.Abstractions;
+using MySpot.Core.DomainServices;
+using MySpot.Core.Policies;
 using MySpot.Core.Repositories;
 using MySpot.Infrastructure.DAL.Repositories;
 using MySpot.Tests.Unit.Shared;
@@ -19,8 +22,17 @@ public class ReservationsServiceTests
     public ReservationsServiceTests()
     {
         _clock = new TestClock();
+
+        IEnumerable<IReservationPolicy> policies = new List<IReservationPolicy>()
+        {
+            new BossReservationPolicy(),
+            new ManagerReservationPolicy(),
+            new RegularEmployeeReservationPolicy(_clock),
+        };
+        IParkingReservationService parkingReservationService = new ParkingReservationService(policies, _clock);
+
         _weeklyParkingSpotRepository = new InMemoryWeeklyParkingSpotRepository(_clock);
-        _reservationService = new ReservationsService(_weeklyParkingSpotRepository, _clock);
+        _reservationService = new ReservationsService(_weeklyParkingSpotRepository, _clock, parkingReservationService);
     }
 
     #endregion
