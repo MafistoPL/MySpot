@@ -36,10 +36,10 @@ public class ReservationsController : ControllerBase
     public async Task<ActionResult<IEnumerable<ReservationDto>>> GetAllAsync() 
         => Ok(await _reservationsService.GetAllWeeklyAsync());
     
-    [HttpPost]
-    public async Task<ActionResult> Post(CreateReservation command)
+    [HttpPost("vehicle")]
+    public async Task<ActionResult> Post(ReserveParkingSpotForVehicle command)
     {
-        var id = await _reservationsService.CreateAsync(command);
+        var id = await _reservationsService.ReserveForVehicleAsync(command);
         if (id is null)
         {
             return BadRequest();
@@ -48,10 +48,18 @@ public class ReservationsController : ControllerBase
         return CreatedAtAction(nameof(Get), new {id}, null);
     }
 
+    [HttpPost("cleaning")]
+    public async Task<ActionResult> Post(ReserveParkingSpotForCleaning command)
+    {
+        await _reservationsService.ReserveForCleaningAsync(command);
+
+        return Ok();
+    }
+
     [HttpPut("{id:guid}")]
     public async Task<ActionResult> Put(Guid id, ChangeReservationLicensePlate command)
     {
-        if (await _reservationsService.UpdateAsync(command with {ReservationId = id}))
+        if (await _reservationsService.ChangeReservationLicensePlateAsync(command with {ReservationId = id}))
         {
             return NoContent();
         }

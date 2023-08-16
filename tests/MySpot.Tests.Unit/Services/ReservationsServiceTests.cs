@@ -42,7 +42,7 @@ public class ReservationsServiceTests
     {
         // ARRANGE
         var parkingSpot = (await _weeklyParkingSpotRepository.GetAllAsync()).First(); 
-        var command = new CreateReservation(
+        var command = new ReserveParkingSpotForVehicle(
             parkingSpot.Id,
             "John Doe",
             "XYZ123",
@@ -50,7 +50,7 @@ public class ReservationsServiceTests
         );
         
         // ACT
-        var reservationId = await _reservationService.CreateAsync(command);
+        var reservationId = await _reservationService.ReserveForVehicleAsync(command);
 
         // ASSERT
         reservationId.ShouldNotBeNull();

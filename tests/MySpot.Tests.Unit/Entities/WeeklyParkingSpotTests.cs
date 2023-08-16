@@ -24,11 +24,11 @@ public class WeeklyParkingSpotTests
     [Theory]
     [InlineData("2022-08-09")]
     [InlineData("2022-08-17")]
-    public void given_invalid_date_add_reservation_should_fail(string dateString)
+    public void given_invalid_date_add_vehicle_reservation_should_fail(string dateString)
     {
         // ARRANGE
         var invalidDate = DateTime.Parse(dateString);
-        var reservation = new Reservation(Guid.NewGuid(), _weeklyParkingSpot.Id, 
+        var reservation = new VehicleReservation(Guid.NewGuid(), _weeklyParkingSpot.Id, 
             "John Doe", "XYZ123", new Date(invalidDate));
 
         // ACT
@@ -41,13 +41,13 @@ public class WeeklyParkingSpotTests
     }
 
     [Fact]
-    public void given_reservation_for_already_existing_date_add_reservation_should_fail()
+    public void given_reservation_for_already_existing_date_add_vehicle_reservation_should_fail()
     {
         // ARRANGE
         var reservationDate = _now.AddDays(1);
-        var reservation = new Reservation(Guid.NewGuid(), _weeklyParkingSpot.Id, 
+        var reservation = new VehicleReservation(Guid.NewGuid(), _weeklyParkingSpot.Id, 
             "John Doe", "XYZ123", reservationDate);
-        var nextReservation = new Reservation(Guid.NewGuid(), _weeklyParkingSpot.Id, 
+        var nextReservation = new VehicleReservation(Guid.NewGuid(), _weeklyParkingSpot.Id, 
             "John Doe", "XYZ123", reservationDate);
         _weeklyParkingSpot.AddReservation(reservation, _now);
         
@@ -61,11 +61,11 @@ public class WeeklyParkingSpotTests
     }
 
     [Fact]
-    public void given_reservation_for_not_taken_date_add_reservation_should_succeed()
+    public void given_reservation_for_not_taken_date_add_vehicle_reservation_should_succeed()
     {
         // ARRANGE
         var reservationDate = _now.AddDays(1);
-        var reservation = new Reservation(Guid.NewGuid(), _weeklyParkingSpot.Id, 
+        var reservation = new VehicleReservation(Guid.NewGuid(), _weeklyParkingSpot.Id, 
             "John Doe", "XYZ123", reservationDate);
         
         // ACT
