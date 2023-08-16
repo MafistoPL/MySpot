@@ -16,7 +16,7 @@ public class WeeklyParkingSpotTests
     public WeeklyParkingSpotTests()
     {
         _now = new Date(new DateTime(2022, 08, 10));
-        _weeklyParkingSpot = new WeeklyParkingSpot(Guid.NewGuid(), new Week(_now), "P1");
+        _weeklyParkingSpot = WeeklyParkingSpot.Create(Guid.NewGuid(), new Week(_now), "P1");
     }
 
     #endregion
@@ -29,7 +29,7 @@ public class WeeklyParkingSpotTests
         // ARRANGE
         var invalidDate = DateTime.Parse(dateString);
         var reservation = new VehicleReservation(Guid.NewGuid(), _weeklyParkingSpot.Id, 
-            "John Doe", "XYZ123", new Date(invalidDate));
+            "John Doe", "XYZ123", 2, new Date(invalidDate));
 
         // ACT
         var exception = Record.Exception(
@@ -46,9 +46,9 @@ public class WeeklyParkingSpotTests
         // ARRANGE
         var reservationDate = _now.AddDays(1);
         var reservation = new VehicleReservation(Guid.NewGuid(), _weeklyParkingSpot.Id, 
-            "John Doe", "XYZ123", reservationDate);
+            "John Doe", "XYZ123", 2, reservationDate);
         var nextReservation = new VehicleReservation(Guid.NewGuid(), _weeklyParkingSpot.Id, 
-            "John Doe", "XYZ123", reservationDate);
+            "John Doe", "XYZ123", 2, reservationDate);
         _weeklyParkingSpot.AddReservation(reservation, _now);
         
         // ACT
@@ -57,7 +57,7 @@ public class WeeklyParkingSpotTests
         
         // ASSERT
         exception.ShouldNotBeNull();
-        exception.ShouldBeOfType<ParkingSpotAlreadyReservedException>();
+        exception.ShouldBeOfType<ParkingSpotCapacityExceededException>();
     }
 
     [Fact]
@@ -66,7 +66,7 @@ public class WeeklyParkingSpotTests
         // ARRANGE
         var reservationDate = _now.AddDays(1);
         var reservation = new VehicleReservation(Guid.NewGuid(), _weeklyParkingSpot.Id, 
-            "John Doe", "XYZ123", reservationDate);
+            "John Doe", "XYZ123", 2, reservationDate);
         
         // ACT
         _weeklyParkingSpot.AddReservation(reservation, _now);

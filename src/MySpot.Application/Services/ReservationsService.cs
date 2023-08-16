@@ -59,6 +59,7 @@ public class ReservationsService : IReservationsService
             command.ParkingSpotId,
             command.EmployeeName,
             command.LicensePlate, 
+            command.ParkingSpotCapacity,
             new Date(command.Date));
         
         _parkingReservationService.ReserveSpotForVehicle(
@@ -96,7 +97,7 @@ public class ReservationsService : IReservationsService
 
         var existingReservation = weeklyParkingSpot.Reservations
             .OfType<VehicleReservation>()
-            .SingleOrDefault(x => x.Id == command.ReservationId);
+            .SingleOrDefault(x => x.Id.Value == command.ReservationId);
         if (existingReservation is null)
         {
             return false;
@@ -122,7 +123,7 @@ public class ReservationsService : IReservationsService
         }
 
         var existingReservation = weeklyParkingSpot.Reservations.SingleOrDefault(
-            x => x.Id == command.ReservationId);
+            x => x.Id.Value == command.ReservationId);
         if (existingReservation is null)
         {
             return false;
@@ -139,6 +140,6 @@ public class ReservationsService : IReservationsService
         var weeklyParkingSpots = await _weeklyParkingSpotRepository.GetAllAsync();
         
         return weeklyParkingSpots.SingleOrDefault(
-            x => x.Reservations.Any(r => r.Id == reservationId));
+            x => x.Reservations.Any(r => r.Id.Value == reservationId));
     }
 }

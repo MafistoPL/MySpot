@@ -46,6 +46,7 @@ public class ReservationsServiceTests
             parkingSpot.Id,
             "John Doe",
             "XYZ123",
+            2,
             _clock.Current().AddMinutes(5)
         );
         

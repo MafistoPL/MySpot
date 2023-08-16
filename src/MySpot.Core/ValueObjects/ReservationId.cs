@@ -2,7 +2,7 @@
 
 namespace MySpot.Core.ValueObjects;
 
-public sealed class ReservationId
+public sealed record ReservationId
 {
     public Guid Value { get; }
 

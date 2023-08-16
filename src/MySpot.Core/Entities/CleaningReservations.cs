@@ -8,8 +8,9 @@ public sealed class CleaningReservations : Reservation
     {
     }
     
-    public CleaningReservations(ReservationId id, ParkingSpotId parkingSpotId, Date date)
-        : base(id, parkingSpotId, date)
+    public CleaningReservations(ReservationId id, ParkingSpotId parkingSpotId, 
+        ParkingSpotCapacity fullCapacity, Date date)
+        : base(id, parkingSpotId, fullCapacity, date)
     {
     }
 }

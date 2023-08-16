@@ -5,19 +5,26 @@ namespace MySpot.Core.Entities;
 
 public class WeeklyParkingSpot
 {
+    public const int MaxParkingSpotCapacity = 2;
+    
     private readonly HashSet<Reservation> _reservations = new();
     
     public ParkingSpotId Id { get; private set; }
     public Week Week { get; private set; }
     public ParkingSpotName Name { get; private set; }
+    public ParkingSpotCapacity ParkingSpotCapacity { get; private set; }
     public IEnumerable<Reservation> Reservations => _reservations;
 
-    public WeeklyParkingSpot(ParkingSpotId id, Week week, ParkingSpotName name)
+    private WeeklyParkingSpot(ParkingSpotId id, Week week, ParkingSpotName name, ParkingSpotCapacity parkingSpotCapacity)
     {
         Id = id;
         Week = week;
         Name = name;
+        ParkingSpotCapacity = parkingSpotCapacity;
     }
+
+    public static WeeklyParkingSpot Create(ParkingSpotId id, Week week, ParkingSpotName name)
+        => new(id, week, name, MaxParkingSpotCapacity);
 
     internal void AddReservation(Reservation reservation, Date now)
     {
@@ -29,11 +36,13 @@ public class WeeklyParkingSpot
             throw new InvalidReservationDateException(reservation.Date.Value.Date);
         }
 
-        var reservationAlreadyExists = Reservations.Any(x =>
-            x.Date == reservation.Date);
-        if (reservationAlreadyExists)
+        var dateCapacity = _reservations
+            .Where(x => x.Date == reservation.Date)
+            .Sum(x => x.ParkingSpotCapacity);
+
+        if (dateCapacity + reservation.ParkingSpotCapacity > ParkingSpotCapacity)
         {
-            throw new ParkingSpotAlreadyReservedException(Name, reservation.Date.Value.Date);
+            throw new ParkingSpotCapacityExceededException(Id);
         }
 
         _reservations.Add(reservation);
@@ -41,7 +50,7 @@ public class WeeklyParkingSpot
 
     public void RemoveReservation(Guid reservationId)
     {
-        var reservationToRemove = _reservations.FirstOrDefault(r => r.Id == reservationId);
+        var reservationToRemove = _reservations.FirstOrDefault(r => r.Id.Value == reservationId);
 
         if (reservationToRemove == null)
         {
