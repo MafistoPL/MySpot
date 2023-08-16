@@ -21,6 +21,6 @@ internal sealed class RegularEmployeeReservationPolicy : IReservationPolicy
             .OfType<VehicleReservation>()
             .Count(x => x.EmployeeName == employeeName);
 
-        return totalEmployeeReservations <= 2 /* && _clock.Current().Hour > 4 */;
+        return totalEmployeeReservations < 2 && _clock.Current().Hour > 4;
     }
 }
